@@ -8,3 +8,10 @@ Task::Task()
 }
 
 
+uint8_t Task::run(void){
+    return(0);
+}
+
+uint8_t Task::setup(void){
+    return(0);
+}
