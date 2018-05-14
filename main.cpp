@@ -3,6 +3,7 @@
 #include "Scheduler.hpp"
 #include "Task.hpp"
 #include "LED.hpp"
+#include "Mailbox.hpp"
 
 // ##########################
 // Global/Static declarations
