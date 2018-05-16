@@ -7,6 +7,12 @@ Task::Task()
     m_bIsFinished = false;
 }
 
+Task::Task(Mailbox * i_Mailbox)
+{
+    m_u8TaskID = m_u8NextTaskID;
+    m_u8NextTaskID++;
+    m_bIsFinished = false;
+}
 
 uint8_t Task::run(void){
     return(0);

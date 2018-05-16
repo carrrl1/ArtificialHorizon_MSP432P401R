@@ -11,12 +11,15 @@
 uint8_t Task::m_u8NextTaskID = 0; // - Init task ID
 volatile static uint64_t g_SystemTicks = 0; // - The system counter.
 Scheduler g_MainScheduler; // - Instantiate a Scheduler
+// - Instantiate the new Mailbox
+Mailbox g_MainMailbox;
 
 // #########################
 //          MAIN
 // #########################
 void main(void)
 {
+
 
     // - Instantiate two new Tasks
     LED BlueLED(BIT2);

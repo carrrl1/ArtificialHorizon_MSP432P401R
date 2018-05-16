@@ -1,17 +1,19 @@
 /*
  * Scheduler.hpp
  *
- *  Created on: Aug 31, 2016
- *      Author: eortiz
+ *  Created on: 
+ *      Author: cesolano
  */
 
 #ifndef MAILBOX_HPP_
 #define MAILBOX_HPP_
 #include "msp.h"
-#include "Task.hpp"
 
 #define MAILBOX_SLOTS 255
 #define NULL            0
+
+#define NO_ERR 0
+#define RET_ERR 1
 
 // - This structure defines the Task Information
 struct st_Message {
@@ -23,12 +25,12 @@ struct st_Message {
 
 class Mailbox
 {
-public:
-    Mailbox();
-    st_Message *    GetMessage(uint8_t i_u8Receiver); // - Get the message form the mailbox.
-    uint8_t         SendMessage(st_Message * i_stMessage); // - Send a message (stores it into the inbox)
-private:
-    st_Message * m_aInbox[MAILBOX_SLOTS]; // - Inbox
+	public:
+	    Mailbox();
+	    st_Message *    GetMessage(uint8_t i_u8Receiver); // - Get the message form the mailbox.
+	    uint8_t         SendMessage(st_Message * i_stMessage); // - Send a message (stores it into the inbox)
+	private:
+	    st_Message * m_aInbox[MAILBOX_SLOTS]; // - Inbox
 };
 
 

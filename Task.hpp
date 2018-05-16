@@ -1,7 +1,8 @@
-#ifndef TASK_HPP_
-#define TASK_HPP_
+#ifndef MAILBOX_TASK_HPP_
+#define MAILBOX_TASK_HPP_
 
 #include "msp.h"
+#include "Mailbox.hpp"
 
 #define NO_ERR 0
 #define RET_ERR 1
@@ -10,6 +11,7 @@ class Task
 {
 	public:
 		Task();
+		Task(Mailbox * i_Mailbox);
 		uint8_t m_u8TaskID;
 		virtual uint8_t     run(void);
 		virtual uint8_t     setup(void);
@@ -23,4 +25,4 @@ class Task
 	   bool m_bIsFinished;
 };
 
-#endif /* TASK_HPP_ */
+#endif /* MAILBOX_TASK_HPP_ */
