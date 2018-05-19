@@ -15,29 +15,25 @@ uint8_t Mailbox::SendMessage(st_Message * i_stMessage)
     uint8_t l_ErrorCode = NO_ERR;
 
     uint8_t l_u8Receiver = i_stMessage->u8Receiver;
-    bool l_bReaded = false;
 
-    if (m_aInbox[l_u8Receiver] != (uintptr_t) 0)
+    if (m_aInbox[l_u8Receiver] == (uintptr_t) 0)
     {
-        l_bReaded = m_aInbox[l_u8Receiver]->bReaded;
-        if (l_bReaded)
-        {
-            delete m_aInbox[l_u8Receiver];
-        }
+        m_aInbox[l_u8Receiver] =  i_stMessage;
     } 
     else 
     {
-        l_bReaded = true;
+        bool l_bReaded = m_aInbox[l_u8Receiver]->bReaded;
+        if(l_bReaded)
+        {   
+            delete m_aInbox[l_u8Receiver];
+            m_aInbox[l_u8Receiver] =  i_stMessage;
+        }
+        else
+        {
+            l_ErrorCode = RET_ERR;
+        }
     }
 
-    if(l_bReaded)
-    {
-        m_aInbox[l_u8Receiver] =  i_stMessage;
-    }
-    else
-    {
-        l_ErrorCode = RET_ERR;
-    }
     return l_ErrorCode;
 }
 
@@ -46,4 +42,11 @@ st_Message * Mailbox::GetMessage(uint8_t i_u8Receiver)
 {
     m_aInbox[i_u8Receiver]->bReaded=true;
     return m_aInbox[i_u8Receiver];
+}
+
+// - The get function, get a message from the inbox slots usign the receiver ID.
+void Mailbox::DeleteMessage(uint8_t i_u8Receiver)
+{
+    delete m_aInbox[i_u8Receiver];
+    m_aInbox[i_u8Receiver] = (uintptr_t) 0; // Point to an invalid pointer
 }

@@ -28,6 +28,7 @@ class Mailbox
 	public:
 	    Mailbox();
 	    st_Message *    GetMessage(uint8_t i_u8Receiver); // - Get the message form the mailbox.
+	    void		    DeleteMessage(uint8_t i_u8Receiver); // - Delete the message form the mailbox.
 	    uint8_t         SendMessage(st_Message * i_stMessage); // - Send a message (stores it into the inbox)
 	private:
 	    st_Message * m_aInbox[MAILBOX_SLOTS]; // - Inbox
