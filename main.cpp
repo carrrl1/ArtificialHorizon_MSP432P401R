@@ -5,10 +5,8 @@
 #include "Task.hpp"
 #include "LED.hpp"
 #include "LCD.hpp"
-#include <stdint.h>
-#include <driverlib.h>
-#include <grlib/grlib.h>
-#include <stdio.h>
+#include "LCD_DRIVER.hpp"
+#include "Accelerometer.hpp"
 
 // ##########################
 // Global/Static declarations
@@ -30,13 +28,15 @@ void main(void)
     // - Instantiate two new Tasks
     LED BlueLED(BIT2);
     LED GreenLED(BIT1);
-    LCD hola;
+    LCD SCREEN;
+    Accelerometer Motion;
     // - Run the overall setup function for the system
     Setup();
     // - Attach the Tasks to the Scheduler;
-    //g_MainScheduler.attach(&BlueLED, 500);
-    //g_MainScheduler.attach(&LCD_SCREEN, 500);
+    //g_MainScheduler.attach(&BlueLED, 300);
+    g_MainScheduler.attach(&SCREEN, 500);
     g_MainScheduler.attach(&GreenLED, 300);
+    g_MainScheduler.attach(&Motion, 300);
     // - Run the Setup for the scheduler and all tasks
     g_MainScheduler.setup();
     // - Main Loop
@@ -113,4 +113,25 @@ extern "C"
 		g_SystemTicks++;
 		return;
 	}
+	/* This interrupt is fired whenever a conversion is completed and placed in
+	 * ADC_MEM2. This signals the end of conversion and the results array is
+	 * grabbed and placed in resultsBuffer */
+	void ADC14_IRQHandler(void)
+	{
+	    uint64_t status;
+
+	    status = MAP_ADC14_getEnabledInterruptStatus();
+	    MAP_ADC14_clearInterruptFlag(status);
+
+	    /* ADC_MEM2 conversion completed */
+	    if(status & ADC_INT2)
+	    {
+	        /* Store ADC14 conversion results */
+	        //resultsBuffer[0] = ADC14_getResult(ADC_MEM0);
+	        //resultsBuffer[1] = ADC14_getResult(ADC_MEM1);
+	        //resultsBuffer[2] = ADC14_getResult(ADC_MEM2);
+
+	    }
+	}
+
 }
