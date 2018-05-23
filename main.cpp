@@ -1,9 +1,14 @@
 #include "msp.h"
 #include "main.hpp"
 #include "Scheduler.hpp"
+#include "Mailbox.hpp"
 #include "Task.hpp"
 #include "LED.hpp"
-#include "Mailbox.hpp"
+#include "LCD.hpp"
+#include <stdint.h>
+#include <driverlib.h>
+#include <grlib/grlib.h>
+#include <stdio.h>
 
 // ##########################
 // Global/Static declarations
@@ -25,11 +30,13 @@ void main(void)
     // - Instantiate two new Tasks
     LED BlueLED(BIT2);
     LED GreenLED(BIT1);
+    LCD hola;
     // - Run the overall setup function for the system
     Setup();
     // - Attach the Tasks to the Scheduler;
-    g_MainScheduler.attach(&BlueLED, 500);
-    //g_MainScheduler.attach(&GreenLED, 300);
+    //g_MainScheduler.attach(&BlueLED, 500);
+    //g_MainScheduler.attach(&LCD_SCREEN, 500);
+    g_MainScheduler.attach(&GreenLED, 300);
     // - Run the Setup for the scheduler and all tasks
     g_MainScheduler.setup();
     // - Main Loop
@@ -57,6 +64,21 @@ void Setup(void)
 	// ****************************
 	// - Disable WDT
 	WDT_A->CTL = WDT_A_CTL_PW | WDT_A_CTL_HOLD;
+
+	    /* Set the core voltage level to VCORE1 */
+    MAP_PCM_setCoreVoltageLevel(PCM_VCORE1);
+
+    /* Set 2 flash wait states for Flash bank 0 and 1*/
+    MAP_FlashCtl_setWaitState(FLASH_BANK0, 2);
+    MAP_FlashCtl_setWaitState(FLASH_BANK1, 2);
+
+    /* Initializes Clock System */
+    MAP_CS_setDCOCenteredFrequency(CS_DCO_FREQUENCY_48);
+    MAP_CS_initClockSignal(CS_MCLK, CS_DCOCLK_SELECT, CS_CLOCK_DIVIDER_1);
+    MAP_CS_initClockSignal(CS_HSMCLK, CS_DCOCLK_SELECT, CS_CLOCK_DIVIDER_1);
+    MAP_CS_initClockSignal(CS_SMCLK, CS_DCOCLK_SELECT, CS_CLOCK_DIVIDER_1);
+    MAP_CS_initClockSignal(CS_ACLK, CS_REFOCLK_SELECT, CS_CLOCK_DIVIDER_1);
+
 
 	// ****************************
 	//         PORT CONFIG
