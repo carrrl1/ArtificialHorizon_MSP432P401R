@@ -503,3 +503,70 @@ void ClearScreen (const Graphics_Display *i_pDisplay,
     Graphics_Rectangle l_sRect = { 0, 0, LCD_VERTICAL_MAX-1, LCD_VERTICAL_MAX-1};
     RectFill(i_pDisplay, &l_sRect, i_u16Value);
 }
+
+
+//
+const Graphics_Display_Functions g_sDisplay_Functions =
+{
+    PixelDraw,
+    PixelDrawMultiple,
+    LineDrawH,
+    LineDrawV,
+    RectFill,
+    ColorTranslate,
+    Flush,
+    ClearScreen
+};
+
+//*****************************************************************************
+//
+//! Provides a small delay.
+//!
+//! \param ui32Count is the number of delay loop iterations to perform.
+//!
+//! This function provides a means of generating a delay by executing a simple
+//! 3 instruction cycle loop a given number of times.  It is written in
+//! assembly to keep the loop instruction count consistent across tool chains.
+//!
+//! It is important to note that this function does NOT provide an accurate
+//! timing mechanism.  Although the delay loop is 3 instruction cycles long,
+//! the execution time of the loop will vary dramatically depending upon the
+//! application's interrupt environment (the loop will be interrupted unless
+//! run with interrupts disabled and this is generally an unwise thing to do)
+//! and also the current system clock rate and flash timings (wait states and
+//! the operation of the prefetch buffer affect the timing).
+//!
+//! For best accuracy, a system timer should be used with code either polling
+//! for a particular timer value being exceeded or processing the timer
+//! interrupt to determine when a particular time period has elapsed.
+//!
+//! \return None.
+//
+//*****************************************************************************
+#if defined( __ICCARM__ ) || defined(DOXYGEN)
+void
+SysCtlDelay(uint32_t ui32Count)
+{
+    __asm("    subs    r0, #1\n"
+          "    bne.n   SysCtlDelay\n"
+          "    bx      lr");
+}
+#endif
+#if defined(codered) || defined( __GNUC__ ) || defined(sourcerygxx)
+void __attribute__((naked))
+SysCtlDelay(uint32_t ui32Count)
+{
+    __asm("    subs    r0, #1\n"
+          "    bne     SysCtlDelay\n"
+          "    bx      lr");
+}
+#endif
+#if defined(rvmdk) || defined( __CC_ARM )
+__asm void
+SysCtlDelay(uint32_t ui32Count)
+{
+    subs    r0, #1;
+    bne     SysCtlDelay;
+    bx      lr;
+}
+#endif

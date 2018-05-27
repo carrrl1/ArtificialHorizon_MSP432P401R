@@ -37,7 +37,7 @@ uint8_t LCD::run()
 
     //this->m_pMailbox->SendMessage(&l_st_SendMessage);
 
-    //Graphics_clearDisplay(&m_sContext);
+    Graphics_clearDisplay(&m_sContext);
     //Graphics_setForegroundColor(&m_sContext, GRAPHICS_COLOR_RED);
     /*Graphics_drawStringCentered(&m_sContext,
                                     (int8_t *)"Accelerometer:",
@@ -61,6 +61,7 @@ uint8_t LCD::run()
 uint8_t LCD::setup()
 {
     //LCD setup
+    MAP_Interrupt_disableMaster();
 
     // Set up SPI Ports
     // LCD_SCK
@@ -141,25 +142,13 @@ uint8_t LCD::setup()
     HAL_LCD_delay(10);
     HAL_LCD_writeCommand(CM_DISPON);
 
-    //
-    const Graphics_Display_Functions l_sDisplay_Functions =
-    {
-        PixelDraw,
-        PixelDrawMultiple,
-        LineDrawH,
-        LineDrawV,
-        RectFill,
-        ColorTranslate,
-        Flush,
-        ClearScreen
-    };
 
     //Set the orientation
     SetOrientation(LCD_ORIENTATION_UP);
 
     /* Initializes graphics context */
     //Graphics_initContext(&m_sContext, &m_sDisplay, &m_sDisplay_Functions);
-    Graphics_initContext(&m_sContext, &m_sDisplay, &l_sDisplay_Functions);
+    Graphics_initContext(&m_sContext, &m_sDisplay, &g_sDisplay_Functions);
     Graphics_setForegroundColor(&m_sContext, GRAPHICS_COLOR_RED);
     Graphics_setBackgroundColor(&m_sContext, ClrBlue);
     GrContextFontSet(&m_sContext, &g_sFontFixed6x8);
@@ -172,6 +161,7 @@ uint8_t LCD::setup()
                                     OPAQUE_TEXT);
 
     //drawTitle();
+    MAP_Interrupt_enableMaster();
 
     return(NO_ERR);
 }
