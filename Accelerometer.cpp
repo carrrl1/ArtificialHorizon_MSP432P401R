@@ -2,25 +2,43 @@
 
 Accelerometer::Accelerometer()
 {
-
+    this->m_u16PastY=0;
+    this->m_u16PastZ=0;
+    this->m_u16Angle=0;
 }
 
 uint8_t Accelerometer::run()
 {
-    //Send message
-    //st_Message l_st_SendMessage;
-
-    //l_st_SendMessage.u8Sender = this->m_u8TaskID;
-    //l_st_SendMessage.u8Receiver = this->m_u8TaskID;
-    //l_st_SendMessage.u32Content ^= m_u16BITN;
-
-    //this->m_pMailbox->SendMessage(&l_st_SendMessage);
-
     //Receive message
-    //st_Message * l_st_ReceiveMessage;
-    //l_st_ReceiveMessage=this->m_pMailbox->GetMessage(this->m_u8TaskID);
+    
+    st_Message * l_st_ReceiveMessage;
+    l_st_ReceiveMessage=this->m_pMailbox->GetMessage(this->m_u8TaskID);
 
-    //uint16_t l_u16Data=l_st_ReceiveMessage->u32Content;
+    uint32_t l_u32Data=l_st_ReceiveMessage->u32Content;
+
+    int16_t l_u16Y = l_u32Data>>16;
+    int16_t l_u16Z = (int16_t)l_u32Data;
+
+    int16_t l_u16DeltaY = l_u16Y - this->m_u16PastY;
+    int16_t l_u16DeltaZ = l_u16Z - this->m_u16PastZ;
+    this->m_u16PastY = l_u16Y;
+    this->m_u16PastZ = l_u16Z;
+
+
+    int16_t l_u16DeltaAngle = atan(l_u16DeltaY/l_u16DeltaZ);  
+
+    this->m_u16Angle+=l_u16DeltaAngle;
+
+    //Send message
+    st_Message l_st_SendMessage;
+
+    l_st_SendMessage.u8Sender = this->m_u8TaskID;
+    l_st_SendMessage.u8Receiver = this->m_u8LinkedTaskID;
+    l_st_SendMessage.u32Content = (uint32_t)m_u16Angle;
+    //l_st_SendMessage.u32Content = 32;
+    this->m_pMailbox->SendMessage(l_st_SendMessage);
+
+
 
     return(NO_ERR);
 }

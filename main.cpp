@@ -19,6 +19,8 @@ Mailbox g_MainMailbox;
 // - Instantiate the mailbox pointer for Task and Scheduler class
 Mailbox * Task::m_pMailbox = &g_MainMailbox;
 Mailbox * Scheduler::m_pMailbox = &g_MainMailbox;
+//The ID for the accelerometer task for the ADC14 IRQ
+uint8_t g_u8AccelerometerTaskID;
 
 // #########################
 //          MAIN
@@ -29,14 +31,17 @@ void main(void)
     LED BlueLED(BIT2);
     LED GreenLED(BIT1);
     LCD SCREEN;
-    Accelerometer Motion;
+    Accelerometer MOTION;
+    g_u8AccelerometerTaskID = MOTION.m_u8TaskID;
+    MOTION.SetLinkedTask(SCREEN.m_u8TaskID);
     // - Run the overall setup function for the system
     Setup();
     // - Attach the Tasks to the Scheduler;
     //g_MainScheduler.attach(&BlueLED, 300);
+    g_MainScheduler.attach(&MOTION, 500);
     g_MainScheduler.attach(&SCREEN, 500);
     g_MainScheduler.attach(&GreenLED, 300);
-    g_MainScheduler.attach(&Motion, 300);
+    
     // - Run the Setup for the scheduler and all tasks
     g_MainScheduler.setup();
     // - Main Loop
@@ -127,9 +132,26 @@ extern "C"
 	    if(status & ADC_INT2)
 	    {
 	        /* Store ADC14 conversion results */
-	        //resultsBuffer[0] = ADC14_getResult(ADC_MEM0);
-	        //resultsBuffer[1] = ADC14_getResult(ADC_MEM1);
-	        //resultsBuffer[2] = ADC14_getResult(ADC_MEM2);
+	        uint16_t l_u16Y=ADC14_getResult(ADC_MEM0);
+	        uint16_t l_u16Z=ADC14_getResult(ADC_MEM1);
+	        uint32_t l_u32Result=l_u16Y;
+	        l_u32Result <<= 16;
+	        l_u32Result |= l_u16Z;
+
+	        //Send message
+	        
+		    st_Message l_st_SendMessage;
+
+		    l_st_SendMessage.u8Sender = g_u8AccelerometerTaskID;
+		    l_st_SendMessage.u8Receiver = g_u8AccelerometerTaskID;
+		    l_st_SendMessage.u32Content = l_u32Result;
+
+		    g_MainMailbox.SendMessage(l_st_SendMessage);
+		    /* 
+	        //resultsBuffer[0] = ADC14_getResult(ADC_MEM0); //X
+	        //resultsBuffer[1] = ADC14_getResult(ADC_MEM1); //Y
+	        //resultsBuffer[2] = ADC14_getResult(ADC_MEM2); //Z
+			*/
 
 	    }
 	}

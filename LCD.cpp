@@ -37,7 +37,22 @@ uint8_t LCD::run()
 
     //this->m_pMailbox->SendMessage(&l_st_SendMessage);
 
-    Graphics_clearDisplay(&m_sContext);
+    //Receive message
+    st_Message * l_st_ReceiveMessage;
+    l_st_ReceiveMessage=this->m_pMailbox->GetMessage(this->m_u8TaskID);
+
+    int16_t l_i16Data=(int16_t)l_st_ReceiveMessage->u32Content;
+
+    char string[15];
+    sprintf(string, "A: %5d", l_i16Data);
+    Graphics_drawStringCentered(&m_sContext,
+                                    (int8_t *)string,
+                                    8,
+                                    64,
+                                    50,
+                                    OPAQUE_TEXT);
+
+    //Graphics_clearDisplay(&m_sContext);
     //Graphics_setForegroundColor(&m_sContext, GRAPHICS_COLOR_RED);
     /*Graphics_drawStringCentered(&m_sContext,
                                     (int8_t *)"Accelerometer:",
@@ -47,11 +62,7 @@ uint8_t LCD::run()
                                     OPAQUE_TEXT);
     //Graphics_setForegroundColor(&m_sContext, ClrBlue);*/
 
-    //Receive message
-    //st_Message * l_st_ReceiveMessage;
-    //l_st_ReceiveMessage=this->m_pMailbox->GetMessage(this->m_u8TaskID);
-
-    //uint16_t l_u16Data=l_st_ReceiveMessage->u32Content;
+    
 
 
 

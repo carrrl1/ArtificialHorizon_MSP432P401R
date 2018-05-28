@@ -11,6 +11,7 @@
 #include "msp.h"
 #include "Task.hpp"
 #include <ti/devices/msp432p4xx/driverlib/driverlib.h>
+#include <math.h>
 
 
 class Accelerometer : public Task
@@ -20,6 +21,10 @@ class Accelerometer : public Task
         virtual uint8_t run(void);
         virtual uint8_t setup(void);
     protected:
+    	int16_t m_u16PastY;
+    	int16_t m_u16PastZ;
+    	int16_t m_u16Angle;
+
     private:
 };
 
