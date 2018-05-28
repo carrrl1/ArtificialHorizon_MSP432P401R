@@ -14,7 +14,7 @@ uint8_t LED::run()
     l_st_SendMessage.u8Receiver = this->m_u8TaskID;
     l_st_SendMessage.u32Content ^= m_u16BITN;
 
-    this->m_pMailbox->SendMessage(&l_st_SendMessage);
+    this->m_pMailbox->SendMessage(l_st_SendMessage);
 
     //Receive message
     st_Message * l_st_ReceiveMessage;
