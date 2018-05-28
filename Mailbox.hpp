@@ -1,5 +1,5 @@
 /*
- * Scheduler.hpp
+ * Mailbox.hpp
  *
  *  Created on: 
  *      Author: cesolano
@@ -15,11 +15,11 @@
 #define NO_ERR 0
 #define RET_ERR 1
 
-// - This structure defines the Task Information
+// - This structure defines the Message Information
 struct st_Message {
     uint8_t    u8Sender;
     uint8_t    u8Receiver;
-	uint32_t   u32Content; // - Value to reset
+	uint32_t   u32Content;
     bool       bReaded=false;
 };
 
@@ -29,9 +29,9 @@ class Mailbox
 	    Mailbox();
 	    st_Message *    GetMessage(uint8_t i_u8Receiver); // - Get the message form the mailbox.
 	    void		    DeleteMessage(uint8_t i_u8Receiver); // - Delete the message form the mailbox.
-	    uint8_t         SendMessage(st_Message * i_stMessage); // - Send a message (stores it into the inbox)
+	    uint8_t         SendMessage(st_Message i_stMessage); // - Send a message (stores it into the inbox)
 	private:
-	    st_Message * m_aInbox[MAILBOX_SLOTS]; // - Inbox
+	    st_Message m_aInbox[MAILBOX_SLOTS]; // - Inbox
 };
 
 
