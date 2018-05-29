@@ -132,8 +132,10 @@ extern "C"
 	    if(status & ADC_INT2)
 	    {
 	        /* Store ADC14 conversion results */
-	        uint16_t l_u16Y=ADC14_getResult(ADC_MEM0);
-	        uint16_t l_u16Z=ADC14_getResult(ADC_MEM1);
+	        uint16_t l_u16X=ADC14_getResult(ADC_MEM0);
+	        uint16_t l_u16Y=ADC14_getResult(ADC_MEM1);
+	        uint16_t l_u16Z=ADC14_getResult(ADC_MEM2);
+
 	        uint32_t l_u32Result=l_u16Y;
 	        l_u32Result <<= 16;
 	        l_u32Result |= l_u16Z;
@@ -144,7 +146,7 @@ extern "C"
 
 		    l_st_SendMessage.u8Sender = g_u8AccelerometerTaskID;
 		    l_st_SendMessage.u8Receiver = g_u8AccelerometerTaskID;
-		    l_st_SendMessage.u32Content = l_u32Result;
+		    l_st_SendMessage.u32Content = (uint32_t)l_u32Result;
 
 		    g_MainMailbox.SendMessage(l_st_SendMessage);
 		    /* 

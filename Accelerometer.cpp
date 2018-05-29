@@ -19,23 +19,23 @@ uint8_t Accelerometer::run()
     int16_t l_u16Y = l_u32Data>>16;
     int16_t l_u16Z = (int16_t)l_u32Data;
 
-    int16_t l_u16DeltaY = l_u16Y - this->m_u16PastY;
-    int16_t l_u16DeltaZ = l_u16Z - this->m_u16PastZ;
-    this->m_u16PastY = l_u16Y;
-    this->m_u16PastZ = l_u16Z;
+    float l_fX = 8500;
+    float l_fY = (float)(l_u16Y);
+    float l_fZ = (float)(l_u16Z);
 
+    //double l_u16DeltaAngle = atan2((l_u16DeltaZ),(l_u16DeltaY))*57.3;
+    double l_dPitch = atan2((l_fZ) , sqrt(l_fX*l_fX + l_fY*l_fY)) * 57.3;  
 
-    int16_t l_u16DeltaAngle = atan(l_u16DeltaY/l_u16DeltaZ);  
-
-    this->m_u16Angle+=l_u16DeltaAngle;
+    //this->m_u16Angle+=l_u16DeltaAngle;
+    this->m_u16Angle=l_dPitch;
 
     //Send message
     st_Message l_st_SendMessage;
 
     l_st_SendMessage.u8Sender = this->m_u8TaskID;
     l_st_SendMessage.u8Receiver = this->m_u8LinkedTaskID;
-    l_st_SendMessage.u32Content = (uint32_t)m_u16Angle;
-    //l_st_SendMessage.u32Content = 32;
+    l_st_SendMessage.u32Content = (uint32_t)l_dPitch;
+
     this->m_pMailbox->SendMessage(l_st_SendMessage);
 
 

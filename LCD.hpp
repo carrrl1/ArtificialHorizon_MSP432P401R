@@ -15,6 +15,12 @@
 //#include <ti/devices/msp432p4xx/driverlib/driverlib.h>
 //#include <ti/grlib/grlib.h>
 
+#define DISPLAY_SIZE        127
+#define DISPLAY_MID_LOW        63
+#define DISPLAY_MID_HIGH        64
+#define EARTH_COLOR 0x663300
+#define SKY_COLOR 0x3399FF
+
 //LCD class
 class LCD : public Task
 {
@@ -29,6 +35,7 @@ class LCD : public Task
     	/* Graphic library context */
 		Graphics_Context m_sContext;
 		Graphics_Display m_sDisplay;
+        Graphics_Rectangle m_sSky, m_sEarth;
 		//Graphics_Display_Functions m_sDisplay_Functions;
 		//Graphics_Display m_sFontFixed;
 };

@@ -12,45 +12,44 @@ LCD::LCD()
         LCD_HORIZONTAL_MAX,
     };
     
-    /*
-    m_sDisplay_Functions=
-    {
-        PixelDraw,
-        PixelDrawMultiple,
-        LineDrawH,
-        LineDrawV,
-        RectFill,
-        ColorTranslate,
-        Flush,
-        ClearScreen
-    };*/
+    m_sSky.xMin = 0;
+    m_sSky.xMax = DISPLAY_SIZE;
+    m_sSky.yMin = 0;
+    m_sSky.yMax = DISPLAY_MID_LOW;
+
+    m_sEarth.xMin = 0;
+    m_sEarth.xMax = DISPLAY_SIZE;
+    m_sEarth.yMin = DISPLAY_MID_HIGH;
+    m_sEarth.yMax = DISPLAY_SIZE;
 }
 
 uint8_t LCD::run()
 {
-    //Send message
-    //st_Message l_st_SendMessage;
 
-    //l_st_SendMessage.u8Sender = this->m_u8TaskID;
-    //l_st_SendMessage.u8Receiver = this->m_u8TaskID;
-    //l_st_SendMessage.u32Content ^= m_u16BITN;
-
-    //this->m_pMailbox->SendMessage(&l_st_SendMessage);
 
     //Receive message
     st_Message * l_st_ReceiveMessage;
     l_st_ReceiveMessage=this->m_pMailbox->GetMessage(this->m_u8TaskID);
 
-    int16_t l_i16Data=(int16_t)l_st_ReceiveMessage->u32Content;
+    double l_dData=(double)l_st_ReceiveMessage->u32Content;
 
-    char string[15];
-    sprintf(string, "A: %5d", l_i16Data);
+    //double l_iResult=128*43/(l_dData-30)
+
+
+    Graphics_setForegroundColor(&m_sContext, SKY_COLOR);
+    Graphics_fillRectangle(&m_sContext, &m_sSky);
+    Graphics_setForegroundColor(&m_sContext, EARTH_COLOR);
+    Graphics_fillRectangle(&m_sContext, &m_sEarth);
+
+    char string[20];
+    sprintf(string, "A: %4.4f", l_dData);
     Graphics_drawStringCentered(&m_sContext,
                                     (int8_t *)string,
                                     8,
                                     64,
                                     50,
                                     OPAQUE_TEXT);
+
 
     //Graphics_clearDisplay(&m_sContext);
     //Graphics_setForegroundColor(&m_sContext, GRAPHICS_COLOR_RED);
