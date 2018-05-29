@@ -31,9 +31,23 @@ uint8_t LCD::run()
     st_Message * l_st_ReceiveMessage;
     l_st_ReceiveMessage=this->m_pMailbox->GetMessage(this->m_u8TaskID);
 
-    double l_dData=(double)l_st_ReceiveMessage->u32Content;
+    int32_t l_i32Data=l_st_ReceiveMessage->u32Content;
 
     //double l_iResult=128*43/(l_dData-30)
+    int8_t l_u8Elevation = (int8_t)(63.5 + 0.7*l_i32Data);
+    //uint32_t l_u32Elevation = (uint32_t)(63.5 + 6.4*l_dData);
+
+    if (l_u8Elevation > 127)
+    {
+        l_u8Elevation = 127;
+    }
+    if (l_u8Elevation < 0)
+    {
+        l_u8Elevation = 0;
+    }
+
+    m_sSky.yMax = l_u8Elevation;
+    m_sEarth.yMin = l_u8Elevation;
 
 
     Graphics_setForegroundColor(&m_sContext, SKY_COLOR);
@@ -42,7 +56,7 @@ uint8_t LCD::run()
     Graphics_fillRectangle(&m_sContext, &m_sEarth);
 
     char string[20];
-    sprintf(string, "A: %4.4f", l_dData);
+    sprintf(string, "A: %4.4f", l_i32Data);
     Graphics_drawStringCentered(&m_sContext,
                                     (int8_t *)string,
                                     8,
