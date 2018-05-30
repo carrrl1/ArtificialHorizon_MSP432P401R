@@ -20,6 +20,7 @@
 #define DISPLAY_MID_HIGH        64
 #define EARTH_COLOR 0x663300
 #define SKY_COLOR 0x3399FF
+#define LINE_COLOR 0xFFFFFF    
 
 //LCD class
 class LCD : public Task

@@ -34,7 +34,8 @@ uint8_t LCD::run()
     int32_t l_i32Data=l_st_ReceiveMessage->u32Content;
 
     //double l_iResult=128*43/(l_dData-30)
-    int8_t l_u8Elevation = (int8_t)(63.5 + 0.7*l_i32Data);
+    //int8_t l_u8Elevation = (int8_t)(63.5 + 0.7*l_i32Data);
+    int8_t l_u8Elevation = (int8_t)((30 + l_i32Data)*128/(-46+30));
     //uint32_t l_u32Elevation = (uint32_t)(63.5 + 6.4*l_dData);
 
     if (l_u8Elevation > 127)
@@ -56,13 +57,24 @@ uint8_t LCD::run()
     Graphics_fillRectangle(&m_sContext, &m_sEarth);
 
     char string[20];
-    sprintf(string, "A: %4.4f", l_i32Data);
+    sprintf(string, "A: %4d", l_i32Data);
     Graphics_drawStringCentered(&m_sContext,
                                     (int8_t *)string,
                                     8,
                                     64,
                                     50,
                                     OPAQUE_TEXT);
+
+    Graphics_Rectangle l_sLine;
+    Graphics_setForegroundColor(&m_sContext, LINE_COLOR);
+
+    l_sLine.xMin = 0;
+    l_sLine.xMax = DISPLAY_SIZE;
+    l_sLine.yMin = l_u8Elevation-1;
+    l_sLine.yMax = l_u8Elevation+1;
+
+    Graphics_fillRectangle(&m_sContext, &l_sLine);
+
 
 
     //Graphics_clearDisplay(&m_sContext);
