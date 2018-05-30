@@ -62,7 +62,7 @@ uint8_t LCD::run()
     //Draw the sky
     Graphics_setForegroundColor(&m_sContext, SKY_COLOR);
     Graphics_fillRectangle(&m_sContext, &m_sSky);
-     //Draw the earth
+    //Draw the earth
     Graphics_setForegroundColor(&m_sContext, EARTH_COLOR);
     Graphics_fillRectangle(&m_sContext, &m_sEarth);
     //Draw the middle line
@@ -172,16 +172,28 @@ uint8_t LCD::setup()
     /* Initializes graphics context */
     //Graphics_initContext(&m_sContext, &m_sDisplay, &m_sDisplay_Functions);
     Graphics_initContext(&m_sContext, &m_sDisplay, &g_sDisplay_Functions);
-    Graphics_setForegroundColor(&m_sContext, GRAPHICS_COLOR_RED);
-    Graphics_setBackgroundColor(&m_sContext, ClrBlue);
-    GrContextFontSet(&m_sContext, &g_sFontFixed6x8);
+    Graphics_setBackgroundColor(&m_sContext, LINE_COLOR);
 
+    //Draw the sky
+    Graphics_setForegroundColor(&m_sContext, SKY_COLOR);
+    Graphics_fillRectangle(&m_sContext, &m_sSky);
+    //Draw the earth
+    Graphics_setForegroundColor(&m_sContext, EARTH_COLOR);
+    Graphics_fillRectangle(&m_sContext, &m_sEarth);
+    //Draw the middle line
+    Graphics_setForegroundColor(&m_sContext, LINE_COLOR);
+    Graphics_fillRectangle(&m_sContext, &m_sLine);
+
+
+    /*
+    GrContextFontSet(&m_sContext, &g_sFontFixed6x8);
     Graphics_drawStringCentered(&m_sContext,
                                     (int8_t *)"ArtificialHorizon:",
                                     AUTO_STRING_LENGTH,
                                     64,
                                     30,
                                     OPAQUE_TEXT);
+                                    */
 
     //drawTitle();
     MAP_Interrupt_enableMaster();
