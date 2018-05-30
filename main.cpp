@@ -32,16 +32,17 @@ void main(void)
     LED GreenLED(BIT1);
     LCD SCREEN;
     Accelerometer MOTION;
-    g_u8AccelerometerTaskID = MOTION.m_u8TaskID;
     MOTION.SetLinkedTask(SCREEN.m_u8TaskID);
     // - Run the overall setup function for the system
     Setup();
     // - Attach the Tasks to the Scheduler;
     //g_MainScheduler.attach(&BlueLED, 300);
-    g_MainScheduler.attach(&MOTION, 500);
-    g_MainScheduler.attach(&SCREEN, 500);
-    g_MainScheduler.attach(&GreenLED, 300);
-    
+    g_MainScheduler.attach(&MOTION, 300);
+    g_MainScheduler.attach(&SCREEN, 300);
+    if(false) {
+    	g_u8AccelerometerTaskID = MOTION.m_u8TaskID;
+    	g_MainScheduler.attach(&GreenLED, 300);
+    }
     // - Run the Setup for the scheduler and all tasks
     g_MainScheduler.setup();
     // - Main Loop
@@ -121,6 +122,8 @@ extern "C"
 	/* This interrupt is fired whenever a conversion is completed and placed in
 	 * ADC_MEM2. This signals the end of conversion and the results array is
 	 * grabbed and placed in resultsBuffer */
+
+
 	void ADC14_IRQHandler(void)
 	{
 	    uint64_t status;
@@ -131,6 +134,7 @@ extern "C"
 	    /* ADC_MEM2 conversion completed */
 	    if(status & ADC_INT2)
 	    {
+	    	if(false) {
 	        /* Store ADC14 conversion results */
 	        uint16_t l_u16X=ADC14_getResult(ADC_MEM0);
 	        uint16_t l_u16Y=ADC14_getResult(ADC_MEM1);
@@ -154,6 +158,7 @@ extern "C"
 	        //resultsBuffer[1] = ADC14_getResult(ADC_MEM1); //Y
 	        //resultsBuffer[2] = ADC14_getResult(ADC_MEM2); //Z
 			*/
+			}
 
 	    }
 	}

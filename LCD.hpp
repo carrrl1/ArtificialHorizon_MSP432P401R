@@ -12,8 +12,6 @@
 #include "msp.h"
 #include "Task.hpp"
 #include "LCD_DRIVER.hpp"
-//#include <ti/devices/msp432p4xx/driverlib/driverlib.h>
-//#include <ti/grlib/grlib.h>
 
 #define DISPLAY_SIZE        127
 #define DISPLAY_MID_LOW        63
@@ -36,7 +34,7 @@ class LCD : public Task
     	/* Graphic library context */
 		Graphics_Context m_sContext;
 		Graphics_Display m_sDisplay;
-        Graphics_Rectangle m_sSky, m_sEarth;
+        Graphics_Rectangle m_sSky, m_sEarth, m_sLine;
 		//Graphics_Display_Functions m_sDisplay_Functions;
 		//Graphics_Display m_sFontFixed;
 };

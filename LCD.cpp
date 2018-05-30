@@ -12,6 +12,7 @@ LCD::LCD()
         LCD_HORIZONTAL_MAX,
     };
     
+    //Set sky, earth and line rectangles coordinates
     m_sSky.xMin = 0;
     m_sSky.xMax = DISPLAY_SIZE;
     m_sSky.yMin = 0;
@@ -21,6 +22,11 @@ LCD::LCD()
     m_sEarth.xMax = DISPLAY_SIZE;
     m_sEarth.yMin = DISPLAY_MID_HIGH;
     m_sEarth.yMax = DISPLAY_SIZE;
+
+    m_sLine.xMin = 0;
+    m_sLine.xMax = DISPLAY_SIZE;
+    m_sLine.yMin = DISPLAY_MID_LOW-1;
+    m_sLine.yMax = DISPLAY_MID_HIGH+1;
 }
 
 uint8_t LCD::run()
@@ -41,55 +47,43 @@ uint8_t LCD::run()
     if (l_u8Elevation > 127)
     {
         l_u8Elevation = 127;
-    }
-    if (l_u8Elevation < 0)
+    } else if (l_u8Elevation < 0)
     {
         l_u8Elevation = 0;
+    } else {
+        m_sLine.yMin = l_u8Elevation-1;
+        m_sLine.yMax = l_u8Elevation+1;
     }
 
+    //Set he elvation
     m_sSky.yMax = l_u8Elevation;
     m_sEarth.yMin = l_u8Elevation;
-
-
+    
+    //Draw the sky
     Graphics_setForegroundColor(&m_sContext, SKY_COLOR);
     Graphics_fillRectangle(&m_sContext, &m_sSky);
+     //Draw the earth
     Graphics_setForegroundColor(&m_sContext, EARTH_COLOR);
     Graphics_fillRectangle(&m_sContext, &m_sEarth);
-
-    char string[20];
-    sprintf(string, "A: %4d", l_i32Data);
-    Graphics_drawStringCentered(&m_sContext,
+    //Draw the middle line
+    if (l_u8Elevation != 0 && l_u8Elevation != 127)
+    {
+        Graphics_setForegroundColor(&m_sContext, LINE_COLOR);
+        Graphics_fillRectangle(&m_sContext, &m_sLine);
+    }
+    
+    if (false)
+    {
+        char string[20];
+        sprintf(string, "A: %4d", l_i32Data);
+        Graphics_drawStringCentered(&m_sContext,
                                     (int8_t *)string,
                                     8,
                                     64,
                                     50,
                                     OPAQUE_TEXT);
-
-    Graphics_Rectangle l_sLine;
-    Graphics_setForegroundColor(&m_sContext, LINE_COLOR);
-
-    l_sLine.xMin = 0;
-    l_sLine.xMax = DISPLAY_SIZE;
-    l_sLine.yMin = l_u8Elevation-1;
-    l_sLine.yMax = l_u8Elevation+1;
-
-    Graphics_fillRectangle(&m_sContext, &l_sLine);
-
-
-
-    //Graphics_clearDisplay(&m_sContext);
-    //Graphics_setForegroundColor(&m_sContext, GRAPHICS_COLOR_RED);
-    /*Graphics_drawStringCentered(&m_sContext,
-                                    (int8_t *)"Accelerometer:",
-                                    AUTO_STRING_LENGTH,
-                                    64,
-                                    30,
-                                    OPAQUE_TEXT);
-    //Graphics_setForegroundColor(&m_sContext, ClrBlue);*/
-
+    }
     
-
-
 
     return(NO_ERR);
 }
@@ -158,13 +152,6 @@ uint8_t LCD::setup()
     HAL_LCD_writeData(CM_MADCTL_BGR);
 
     HAL_LCD_writeCommand(CM_NORON);
-
-    //Lcd_ScreenWidth  = LCD_VERTICAL_MAX;
-    //Lcd_ScreenHeigth = LCD_HORIZONTAL_MAX;
-    //Lcd_PenSolid  = 0;
-    //Lcd_FontSolid = 1;
-    //Lcd_FlagRead  = 0;
-    //Lcd_TouchTrim = 0;
 
     SetDrawFrame(0, 0, 127, 127);
     HAL_LCD_writeCommand(CM_RAMWR);

@@ -1,28 +1,24 @@
 #include "Accelerometer.hpp"
 
-Accelerometer::Accelerometer()
-{
-    this->m_u16PastY=0;
-    this->m_u16PastZ=0;
-    this->m_u16Angle=0;
-}
+Accelerometer::Accelerometer(){}
 
 uint8_t Accelerometer::run()
 {
     //Receive message
     
-    st_Message * l_st_ReceiveMessage;
-    l_st_ReceiveMessage=this->m_pMailbox->GetMessage(this->m_u8TaskID);
+    if (false)
+    {
+        st_Message * l_st_ReceiveMessage;
+        l_st_ReceiveMessage=this->m_pMailbox->GetMessage(this->m_u8TaskID);
 
-    uint32_t l_u32Data=l_st_ReceiveMessage->u32Content;
+        uint32_t l_u32Data=l_st_ReceiveMessage->u32Content;
 
-    int16_t l_u16Y = (int16_t)(l_u32Data>>16);
-    int16_t l_u16Z = (int16_t)l_u32Data;
-
-    /*
-    float l_fX = 8500;
-    float l_fY = (float)(l_u16Y);
-    float l_fZ = (float)(l_u16Z);*/
+        int16_t l_u16Y = (int16_t)(l_u32Data>>16);
+        int16_t l_u16Z = (int16_t)l_u32Data;
+        float l_fX = 8500;
+        float l_fY = (float)(l_u16Y);
+        float l_fZ = (float)(l_u16Z);
+    }
 
     /* Store ADC14 conversion results */
     float l_fX=(float)ADC14_getResult(ADC_MEM0);
@@ -30,13 +26,10 @@ uint8_t Accelerometer::run()
     float l_fZ=(float)ADC14_getResult(ADC_MEM2);
 
 
-    //double l_u16DeltaAngle = atan2((l_u16DeltaZ),(l_u16DeltaY))*57.3;
+    //Calculate the pitch angle from the accelerometer data
     int32_t l_i32Pitch = (int32_t)(atan2(-(l_fX),sqrt(l_fZ*l_fZ + l_fY*l_fY)) * 57.3);  
 
-    //this->m_u16Angle+=l_u16DeltaAngle;
-    this->m_u16Angle=l_i32Pitch;
-
-    //Send message
+    //Send message to the LCD task
     st_Message l_st_SendMessage;
 
     l_st_SendMessage.u8Sender = this->m_u8TaskID;
@@ -44,8 +37,6 @@ uint8_t Accelerometer::run()
     l_st_SendMessage.u32Content = l_i32Pitch;
 
     this->m_pMailbox->SendMessage(l_st_SendMessage);
-
-
 
     return(NO_ERR);
 }

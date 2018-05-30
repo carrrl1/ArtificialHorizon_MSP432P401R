@@ -21,10 +21,6 @@ class Accelerometer : public Task
         virtual uint8_t run(void);
         virtual uint8_t setup(void);
     protected:
-    	float m_u16PastY;
-    	float m_u16PastZ;
-    	double m_u16Angle;
-
     private:
 };
 
